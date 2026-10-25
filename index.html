@@ -83,6 +83,29 @@
   </form>
  </div>
 </div>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+ const btn=document.getElementById('connectBtn'); if(!btn)return;
+ btn.addEventListener('click', async (event) => {
+  if(typeof window.__profitTrackConnect==='function')return;
+  event.preventDefault();
+  const msg=document.getElementById('message');
+  const feedback=(text,error=true)=>{if(!msg)return;msg.innerHTML='<div class="feedback'+(error?' error':'')+'"></div>';msg.firstElementChild.textContent=text;};
+  const uf=document.getElementById('supabaseUrl'),kf=document.getElementById('supabaseKey');
+  const url=(uf?.value||'').trim().replace(/\/+$/,'').replace(/\/(rest\/v1|auth\/v1)$/,'');
+  const key=(kf?.value||'').trim();
+  if(!url.startsWith('https://')||!key){feedback('Entre l’URL du projet et sa clé publique.');return;}
+  if(!window.supabase?.createClient){feedback('La bibliothèque Supabase ne se charge pas. Vérifie ta connexion Internet puis recharge la page.');return;}
+  try{
+   const sb=window.supabase.createClient(url,key);const {data,error}=await sb.auth.getSession();if(error)throw error;
+   localStorage.setItem('pt_url',url);localStorage.setItem('pt_key',key);if(uf)uf.value=url;
+   document.getElementById('setup')?.classList.add('hidden');document.getElementById('auth')?.classList.remove('hidden');
+   const status=document.getElementById('status');if(status)status.textContent=data.session?'Connecté':'Prêt à se connecter';
+   feedback('Connexion au projet réussie.',false);
+  }catch(err){feedback('Connexion impossible : '+(err?.message||'vérifie l’URL et la clé publique.'));}
+ },true);
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
