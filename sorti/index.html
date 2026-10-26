@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d18"><meta name="description" content="Sorti — organise tes sorties et partage les frais entre amis.">
+<title>Sorti — sorties entre potes</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#101a2b;--panel2:#142238;--line:#253650;--text:#f2f7ff;--muted:#91a4bf;--cyan:#61e7f5;--violet:#9b8cff;--green:#6ce6b0;--red:#ff8e9a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#172a49 0,transparent 38%),radial-gradient(ellipse at 90% 20%,#211b49 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1050px;margin:auto;padding:24px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:30px}.brand{display:flex;gap:11px;align-items:center;font-weight:850;font-size:23px;letter-spacing:-.7px}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#08111d;font-size:21px;box-shadow:0 0 32px #61e7f533}.pill{border:1px solid #28425d;background:#0d1928;color:var(--cyan);padding:7px 11px;border-radius:99px;font-size:12px}.hero{margin-bottom:24px}.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:750}.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.08;letter-spacing:-1.8px;margin:10px 0}.hero p{max-width:600px;color:var(--muted);margin:0}.layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{border:1px solid var(--line);background:linear-gradient(150deg,#111d30f2,#0d1625f5);border-radius:22px;padding:20px;box-shadow:0 18px 50px #0002}.card h2{font-size:17px;margin:0 0 15px}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}.field label{font-size:12px;color:var(--muted)}input,select{width:100%;background:#091321;border:1px solid #2a3c55;color:var(--text);border-radius:12px;padding:12px 13px;outline:none;min-width:0}input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #61e7f51c}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:750;background:linear-gradient(110deg,var(--cyan),#9f9aff);color:#07111d}.btn.secondary{background:#19283d;color:var(--text);border:1px solid #2b405b}.btn.small{padding:8px 11px;font-size:13px}.btn:active{transform:translateY(1px)}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.stat{background:#0a1422;border:1px solid #20334b;border-radius:15px;padding:13px}.stat small{color:var(--muted);display:block;font-size:11px}.stat strong{display:block;font-size:21px;margin-top:5px;letter-spacing:-.5px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 12px}.sectionhead h2{margin:0}.empty{color:var(--muted);padding:18px 10px;text-align:center;border:1px dashed #2a3b52;border-radius:14px;font-size:13px}.person,.expense{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #203049}.person:last-child,.expense:last-child{border-bottom:0}.personname{display:flex;align-items:center;gap:10px;min-width:0}.avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:#1c2e46;color:var(--cyan);font-weight:800;flex-shrink:0}.sub{color:var(--muted);font-size:12px}.amount{font-weight:800;white-space:nowrap}.positive{color:var(--green)}.negative{color:var(--red)}.expense-title{font-weight:650}.hidden{display:none!important}.notice{color:var(--muted);font-size:12px;margin-top:16px}.footer{text-align:center;color:#71849d;font-size:11px;margin-top:26px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#e7fbff;color:#07111d;border-radius:99px;padding:10px 16px;font-weight:700;box-shadow:0 8px 35px #0006;z-index:5}
+@media(max-width:720px){.wrap{padding:17px 13px 40px}.layout{grid-template-columns:1fr}.top{margin-bottom:23px}.card{padding:16px}.stat{padding:11px}.stat strong{font-size:18px}.hero h1{letter-spacing:-1.1px}.pill{font-size:11px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div class="brand"><div class="logo">↗</div>sorti<span style="color:var(--cyan)">.</span></div><span class="pill">BÊTA · GRATUIT</span></header>
+<section class="hero"><div class="eyebrow">VOS SORTIES, SANS PRISE DE TÊTE</div><h1>Les bons moments.<br><span style="color:var(--cyan)">Les comptes clairs.</span></h1><p>Crée une sortie, ajoute les dépenses et découvre simplement qui a payé quoi.</p></section>
+<div class="layout">
+<section class="card"><h2>01 / Ta sortie</h2>
+<div class="field"><label for="tripName">Nom de la sortie</label><input id="tripName" placeholder="Ex. Week-end à Astérix" maxlength="70"></div>
+<div class="row"><div class="field"><label for="tripDate">Date</label><input id="tripDate" type="date"></div><div class="field"><label for="tripPlace">Lieu (facultatif)</label><input id="tripPlace" placeholder="Paris, parc..." maxlength="60"></div></div>
+<div class="sectionhead"><h2>Les participants</h2><span class="sub" id="peopleCount">0 personne</span></div>
+<div class="row"><div class="field" style="margin:0"><label for="personName">Ajouter un prénom</label><input id="personName" placeholder="Prénom" maxlength="35"></div><button class="btn" id="addPerson" style="align-self:end">Ajouter +</button></div>
+<div id="peopleList" style="margin-top:10px"></div>
+<div class="notice">Astuce : ajoute-toi et tous les amis qui participent à la sortie.</div>
+</section>
+<section class="card"><h2>02 / Les comptes</h2>
+<div class="statgrid"><div class="stat"><small>Dépenses totales</small><strong id="total">0,00 €</strong></div><div class="stat"><small>Par personne</small><strong id="share">0,00 €</strong></div><div class="stat"><small>Participants</small><strong id="count">0</strong></div></div>
+<div class="sectionhead"><h2>Ajouter une dépense</h2></div>
+<div class="field"><label for="expenseName">À quoi correspond-elle ?</label><input id="expenseName" placeholder="Essence, repas, billets..." maxlength="70"></div>
+<div class="row"><div class="field"><label for="expenseAmount">Montant (€)</label><input id="expenseAmount" type="number" inputmode="decimal" min="0.01" max="1000000" step="0.01" placeholder="35,00"></div><div class="field"><label for="payer">Payé par</label><select id="payer"><option value="">Ajoute un participant</option></select></div></div>
+<button class="btn" id="addExpense" style="width:100%">Ajouter la dépense</button>
+<div class="sectionhead"><h2>Historique</h2><button class="btn secondary small" id="export">Exporter CSV</button></div>
+<div id="expensesList"><div class="empty">Tes dépenses apparaîtront ici.</div></div>
+</section>
+</div>
+<section class="card" style="margin-top:16px"><div class="sectionhead" style="margin-top:0"><h2>03 / Qui doit quoi ?</h2><span class="sub">Répartition égale</span></div><div id="balances"><div class="empty">Ajoute des participants et des dépenses pour calculer les soldes.</div></div><p class="notice">Calcul indicatif : chaque dépense est répartie à parts égales entre tous les participants. Cette première version conserve les données sur cet appareil uniquement.</p></section>
+<div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn secondary small" id="reset">Effacer cette sortie</button></div>
+<footer class="footer">SORTI · Une petite appli indépendante · Version 0.1</footer>
+</main><div id="toast" class="toast hidden" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const key='sorti-v1-state';
+const fresh=()=>({tripName:'',tripDate:new Date().toISOString().slice(0,10),tripPlace:'',people:[],expenses:[]});
+let state;try{state=JSON.parse(localStorage.getItem(key))||fresh()}catch{state=fresh()}
+function save(){localStorage.setItem(key,JSON.stringify(state));render()}
+function euro(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0)}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2100)}
+function render(){
+ $('tripName').value=state.tripName;$('tripDate').value=state.tripDate;$('tripPlace').value=state.tripPlace;
+ $('peopleCount').textContent=state.people.length+' '+(state.people.length===1?'personne':'personnes');
+ $('count').textContent=state.people.length;
+ const total=state.expenses.reduce((s,e)=>s+e.amount,0);
+ $('total').textContent=euro(total);$('share').textContent=state.people.length?euro(total/state.people.length):euro(0);
+ $('peopleList').innerHTML=state.people.length?state.people.map(p=>'<div class="person"><div class="personname"><div class="avatar">'+safe(p.name.trim().slice(0,1).toUpperCase())+'</div><div><div>'+safe(p.name)+'</div><div class="sub">Participant</div></div></div><button class="btn secondary small" data-remove-person="'+p.id+'" aria-label="Retirer '+safe(p.name)+'">Retirer</button></div>').join(''):'<div class="empty">Ajoute les personnes qui viennent.</div>';
+ $('payer').innerHTML='<option value="">Choisir un payeur</option>'+state.people.map(p=>'<option value="'+p.id+'">'+safe(p.name)+'</option>').join('');
+ $('expensesList').innerHTML=state.expenses.length?[...state.expenses].reverse().map(e=>{const p=state.people.find(p=>p.id===e.payer);return '<div class="expense"><div style="min-width:0"><div class="expense-title">'+safe(e.name)+'</div><div class="sub">Payé par '+safe(p?p.name:'Participant supprimé')+' · '+new Date(e.date).toLocaleDateString('fr-FR')+'</div></div><div style="display:flex;align-items:center;gap:10px"><span class="amount">'+euro(e.amount)+'</span><button class="btn secondary small" data-remove-expense="'+e.id+'" aria-label="Supprimer la dépense">×</button></div></div>'}).join(''):'<div class="empty">Tes dépenses apparaîtront ici.</div>';
+ const balances=state.people.map(p=>{const paid=state.expenses.filter(e=>e.payer===p.id).reduce((s,e)=>s+e.amount,0);return {...p,paid,net:paid-(state.people.length?total/state.people.length:0)}});
+ $('balances').innerHTML=balances.length?balances.map(p=>'<div class="person"><div class="personname"><div class="avatar">'+safe(p.name.trim().slice(0,1).toUpperCase())+'</div><div><div>'+safe(p.name)+'</div><div class="sub">A avancé '+euro(p.paid)+'</div></div></div><div class="amount '+(p.net>=-0.005?'positive':'negative')+'">'+(p.net>=-0.005?'+':'−')+euro(Math.abs(p.net))+'</div></div>').join(''):'<div class="empty">Ajoute des participants et des dépenses pour calculer les soldes.</div>';
+}
+function saveTripFields(){state.tripName=$('tripName').value;state.tripDate=$('tripDate').value;state.tripPlace=$('tripPlace').value;localStorage.setItem(key,JSON.stringify(state))}
+['tripName','tripDate','tripPlace'].forEach(id=>$(id).addEventListener('change',saveTripFields));
+$('addPerson').addEventListener('click',()=>{const name=$('personName').value.trim();if(!name)return toast('Entre un prénom.');if(state.people.some(p=>p.name.toLowerCase()===name.toLowerCase()))return toast('Ce prénom est déjà dans la liste.');state.people.push({id:crypto.randomUUID(),name});$('personName').value='';save();toast('Participant ajouté.')});
+$('personName').addEventListener('keydown',e=>{if(e.key==='Enter')$('addPerson').click()});
+$('addExpense').addEventListener('click',()=>{const name=$('expenseName').value.trim();const amount=Number($('expenseAmount').value);const payer=$('payer').value;if(!name)return toast('Donne un nom à la dépense.');if(!Number.isFinite(amount)||amount<=0)return toast('Entre un montant valide.');if(!payer)return toast('Choisis qui a payé.');state.expenses.push({id:crypto.randomUUID(),name,amount:Math.round(amount*100)/100,payer,date:new Date().toISOString()});$('expenseName').value='';$('expenseAmount').value='';save();toast('Dépense ajoutée.')});
+document.addEventListener('click',e=>{const rp=e.target.closest('[data-remove-person]');const re=e.target.closest('[data-remove-expense]');if(rp){const id=rp.dataset.removePerson;if(state.expenses.some(x=>x.payer===id)&&!confirm('Cette personne a payé des dépenses. La retirer quand même ?'))return;state.people=state.people.filter(p=>p.id!==id);save()}if(re){state.expenses=state.expenses.filter(x=>x.id!==re.dataset.removeExpense);save()}});
+$('reset').addEventListener('click',()=>{if(confirm('Effacer la sortie et toutes ses dépenses de cet appareil ?')){state=fresh();save();toast('Sortie effacée.')}});
+$('export').addEventListener('click',()=>{if(!state.expenses.length)return toast('Aucune dépense à exporter.');const rows=[['Sortie',state.tripName],['Date',state.tripDate],[],['Dépense','Montant EUR','Payé par','Date'],...state.expenses.map(e=>[e.name,e.amount,state.people.find(p=>p.id===e.payer)?.name||'Inconnu',e.date.slice(0,10)])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='sorti-depenses.csv';a.click();URL.revokeObjectURL(a.href)});
+render();
+</script></body></html>
