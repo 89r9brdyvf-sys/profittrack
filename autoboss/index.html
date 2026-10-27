@@ -24,6 +24,7 @@ canvas{filter:contrast(1.08) saturate(1.12)}
 <section class="panel"><h2>Journal d'activité</h2><div class="sub">Les dernières décisions de ton entreprise.</div><div class="feed" id="feed"></div></section></aside></div><div class="footer">AutoBoss est un jeu de simulation : monnaie et transactions entièrement fictives. Progression sauvegardée sur cet appareil.</div></main><div class="toast" id="toast"></div>
 <script type="module">
 import * as THREE from 'three';import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('fr-FR')+' €';
 const inventory=[
 {id:'c1',name:'Renault Clio',year:2018,km:89000,price:8200,condition:67,color:'#b8c5d0',type:'hatch',emoji:'🚗',desc:'Économique · citadine',risk:'faible'},
