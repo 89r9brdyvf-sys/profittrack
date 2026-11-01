@@ -116,4 +116,13 @@ function coachAsk(topic){
 function render(){let app=$('#app');try{theme();let p=profile();app.innerHTML=page==='home'?home():page==='profiles'?profilePage():page==='program'?program():page==='session'?session():page==='coach'?coach():history()}catch(err){console.error('IRON COACH render error:',err);app.innerHTML='<section class="card"><h1>Erreur de chargement</h1><p>Une ancienne donnée de profil empêche l’affichage. Tes données ne sont pas supprimées.</p><p class="tiny">'+esc(err&&err.message?err.message:'Erreur inconnue')+'</p><button onclick="location.reload()">Réessayer</button><button class="secondary" onclick="localStorage.removeItem(\'ironcoach\');location.reload()">Réinitialiser les données locales</button></section>'}}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
+</script><script>
+window.addEventListener('error',function(e){
+ var app=document.getElementById('app');
+ if(app)app.innerHTML='<section class="card"><h1>Erreur JavaScript détectée</h1><p>Le navigateur a bloqué le démarrage du coach.</p><p class="tiny">'+String(e.message||'Erreur inconnue')+' — ligne '+(e.lineno||'?')+'</p><p>Envoie une capture de ce message.</p></section>';
+});
+window.addEventListener('unhandledrejection',function(e){
+ var app=document.getElementById('app');
+ if(app)app.innerHTML='<section class="card"><h1>Erreur au démarrage</h1><p class="tiny">'+String(e.reason&&e.reason.message||e.reason||'Erreur inconnue')+'</p></section>';
+});
 </script></body></html>
