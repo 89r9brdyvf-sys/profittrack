@@ -14,7 +14,7 @@ header{position:sticky;top:0;z-index:5;background:#0b0c0fee;backdrop-filter:blur
 <body>
 <header><div class="brand">IRON <span>COACH</span></div><div id="headerProfile" class="tiny">Coach sportif personnel</div></header>
 <main class="wrap" id="app"></main>
-<nav class="nav" id="nav"><button data-page="home" class="active">Accueil</button><button data-page="program">Programme</button><button data-page="session">Séance</button><button data-page="history">Suivi</button><button data-page="profiles">Profils</button></nav>
+<nav class="nav" id="nav"><button data-page="home" class="active">Accueil</button><button data-page="program">Programme</button><button data-page="session">Séance</button><button data-page="history">Suivi</button><button data-page="coach">Coach IA</button><button data-page="profiles">Profils</button></nav>
 <script>
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const gyms={basic:{name:'Basic-Fit',accent:'#ff6a00'},onair:{name:'On Air Fitness',accent:'#ed3038'},fitness:{name:'Fitness Park',accent:'#f3d21b'}};
@@ -63,11 +63,57 @@ function exerciseCard(e,i){return '<div class="card"><div class="exercise"><span
 function videoLink(e){return '<a class="video" href="https://www.youtube.com/results?search_query='+encodeURIComponent(e.video)+'" target="_blank" rel="noopener"><strong>▶ Voir la démonstration vidéo</strong><span class="tiny">Recherche vidéo : '+esc(e.video)+'. Choisis une démonstration claire et vérifie la technique auprès d’un encadrant.</span></a>'}
 function nextExercise(){currentIndex++;drawSession()}
 function startRest(n){clearInterval(timerId);seconds=n;let t=$('#timer');if(t)t.textContent=seconds+' s';timerId=setInterval(()=>{seconds--;let el=$('#timer');if(el)el.textContent=seconds>0?seconds+' s':'Repos terminé';if(seconds<=0)clearInterval(timerId)},1000)}
-function finishSession(){clearInterval(timerId);let p=profile();if(!p)return;let loads=activeExercises.map((e,i)=>({exercise:e.name,load:$('#load'+i)?.value||($('#load')?.value||'')}));db.logs.push({id:crypto.randomUUID(),pid:p.id,date:new Date().toISOString(),goal:p.goal,exercises:activeExercises.map(e=>e.name),loads});save();alert('Séance enregistrée dans le profil '+p.name+'.');go('history')}
+function finishSession(){clearInterval(timerId);let p=profile();if(!p)return;let loads=activeExercises.map((e,i)=>({exercise:e.name,load:mode==='guided'?($('#load')?.value||''):($('#load'+i)?.value||'')}));db.logs.push({id:crypto.randomUUID(),pid:p.id,date:new Date().toISOString(),goal:p.goal,mode,exercises:activeExercises.map(e=>e.name),loads});save();alert('Séance enregistrée dans le profil '+p.name+'.');go('history')}
 function history(){let p=profile();if(!p)return '<div class="empty">Sélectionne ou crée un profil.</div>';let logs=db.logs.filter(x=>x.pid===p.id).reverse();return '<h1>Mon suivi</h1><p class="muted">Historique de tes séances enregistrées.</p><div class="card"><div class="stat">'+logs.length+'</div><div class="tiny">Séances enregistrées pour '+esc(p.name)+'</div></div>'+(logs.map(l=>'<div class="card"><b>'+new Date(l.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+'</b><p class="muted">'+l.exercises.length+' exercices · '+esc(goals[l.goal]?.[0]||'Séance')+'</p>'+l.exercises.map(x=>'<span class="pill">'+esc(x)+'</span> ').join('')+'</div>').join('')||'<div class="empty">Pas encore de séance. Lance ton premier entraînement !</div>')}
 function exportData(){let a=document.createElement('a'),blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});a.href=URL.createObjectURL(blob);a.download='iron-coach-sauvegarde.json';a.click();URL.revokeObjectURL(a.href)}
 function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.profiles)||!Array.isArray(d.logs))throw 0;db=d;save();theme();go('home');alert('Sauvegarde importée.')}catch(e){alert('Fichier de sauvegarde invalide.')}};r.readAsText(f)}
-function render(){theme();let p=profile();$('#app').innerHTML=page==='home'?home():page==='profiles'?profilePage():page==='program'?program():page==='session'?session():history()}
+
+function coachAnalysis(p){
+ const logs=db.logs.filter(x=>x.pid===p.id).sort((a,b)=>new Date(a.date)-new Date(b.date));
+ const recent=logs.slice(-5), total=logs.length;
+ const last=recent[recent.length-1], prev=recent[recent.length-2];
+ let notes=[];
+ if(!p.plan) notes.push("Complète ton questionnaire pour que je puisse proposer un programme de départ.");
+ if(total===0) notes.push("Aucune séance enregistrée : commence par une séance facile et note les charges réellement utilisées.");
+ else {
+  if(total<3) notes.push("J’ai encore peu de données. Après quelques séances enregistrées, les tendances seront plus fiables.");
+  else notes.push(total+" séances sont enregistrées. Je peux commencer à comparer la régularité, mais pas mesurer précisément ta progression sans séries et répétitions détaillées.");
+  if(last&&prev){
+   const gap=(new Date(last.date)-new Date(prev.date))/86400000;
+   if(gap<1) notes.push("Deux séances sont très rapprochées. Prévois une récupération suffisante avant de retravailler intensément les mêmes muscles.");
+   else if(gap>10) notes.push("La dernière séance date de plus de 10 jours. Reprends progressivement plutôt que de vouloir rattraper les séances manquées.");
+   else notes.push("L’intervalle entre tes deux dernières séances est d’environ "+Math.round(gap)+" jour(s). Garde un rythme que tu peux tenir sans fatigue persistante.");
+  }
+ }
+ if(p.limits) notes.push("Limitation déclarée : « "+p.limits+" ». Évite les mouvements qui déclenchent une douleur et demande conseil à un professionnel si elle persiste.");
+ if(Number(p.days)>=5) notes.push("Avec 5 séances ou plus, la récupération et la répartition des groupes musculaires deviennent particulièrement importantes. Plus de séances ne signifie pas automatiquement plus de progrès.");
+ return {logs,total,notes,last};
+}
+function coach(){
+ const p=profile();
+ if(!p)return '<h1>Coach IA</h1><div class="card">Crée un profil pour démarrer.</div>'+btn('Créer un profil',"go('profiles')");
+ const a=coachAnalysis(p);
+ return '<h1>Coach IRON</h1><p class="muted">Ton assistant d’entraînement analyse les informations de ton profil et tes séances enregistrées.</p><div class="card"><div class="topline"><span class="pill">ANALYSE AUTOMATIQUE</span><span class="pill">'+a.total+' séance(s)</span></div><h2>Mon bilan</h2>'+a.notes.map(n=>'<p>• '+esc(n)+'</p>').join('')+'<p class="tiny">Cette version utilise des règles locales, pas un modèle génératif connecté. Elle ne remplace pas un coach diplômé ni un avis médical.</p></div><div class="card"><h2>Que veux-tu demander au coach ?</h2><div class="grid"><button class="secondary" onclick="coachAsk(\\'programme\\')">Améliorer mon programme</button><button class="secondary" onclick="coachAsk(\\'progression\\')">Analyser ma progression</button><button class="secondary" onclick="coachAsk(\\'recuperation\\')">Récupération</button><button class="secondary" onclick="coachAsk(\\'objectif\\')">Choisir mon objectif</button></div><div class="field"><label>Ou écris ta question</label><input id="coachQuestion" placeholder="Ex. Comment organiser mes séances ?"><button onclick="coachAsk()">Envoyer ma question</button></div><div id="coachAnswer" class="notice" style="display:none"></div></div><div class="card"><h2>Prochaine étape</h2><p class="muted">Enregistre chaque séance avec tes charges et tes sensations. Plus les données sont précises, plus les conseils de suivi seront utiles.</p>'+btn('Enregistrer une séance',"go('session')")+' '+btn('Modifier mon profil',"go('program')",'secondary')+'</div>';
+}
+function coachAsk(topic){
+ const p=profile();if(!p)return;
+ const a=coachAnalysis(p);const q=$('#coachQuestion')?.value.trim()||'';
+ let answer='';
+ if(topic==='progression'||/progress|stagn|charge|évolu/i.test(q)){
+  answer=a.total<3?'Je n’ai pas encore assez de séances pour conclure. Enregistre plusieurs séances avec les exercices, les charges et les répétitions.':"Je peux constater ta régularité, mais tes anciennes séances ne contiennent pas assez de détails sur les répétitions et les séries pour affirmer que tu progresses ou stagnes. Note ces informations à la prochaine séance.";
+ }else if(topic==='recuperation'||/repos|récup|fatigu|douleur/i.test(q)){
+  answer="Laisse du temps aux muscles sollicités pour récupérer. Si tu ressens une douleur, ne force pas à travers elle et adapte ou arrête l’exercice. Une douleur persistante mérite l’avis d’un professionnel de santé.";
+ }else if(topic==='objectif'||/objectif|choisir/i.test(q)){
+  answer="Choisis prise de muscle si tu veux développer tes muscles, force si tu veux surtout améliorer tes performances sur des mouvements, endurance pour tenir un effort, remise en forme pour une condition générale, ou préparation physique pour compléter un sport. En cas d’hésitation, remise en forme ou prise de muscle avec un programme équilibré est un point de départ possible.";
+ }else if(topic==='programme'||/programme|exercice|séance|split/i.test(q)){
+  answer="Ton programme doit respecter ton expérience, le nombre de jours disponibles, tes préférences et tes éventuelles limitations. Évite de multiplier les exercices pour un seul muscle. Répartis les groupes musculaires sur la semaine et garde des jours de récupération. Va dans Programme pour ajuster tes choix.";
+ }else{
+  answer=q?"Je peux répondre aux sujets entraînement, programme, progression et récupération. Pour être précis, indique ton objectif, ton nombre de séances et ce que tu fais actuellement.":"Choisis une question proposée ou écris ce que tu souhaites améliorer.";
+ }
+ const out=$('#coachAnswer');if(out){out.style.display='block';out.textContent=answer;}
+}
+
+function render(){theme();let p=profile();$('#app').innerHTML=page==='home'?home():page==='profiles'?profilePage():page==='program'?program():page==='session'?session():page==='coach'?coach():history()}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
 </script></body></html>
