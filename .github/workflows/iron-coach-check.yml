@@ -1,0 +1,33 @@
+name: Check IRON COACH JavaScript
+
+on:
+  push:
+    paths:
+      - 'iron-coach/index.html'
+      - '.github/workflows/iron-coach-check.yml'
+  workflow_dispatch:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Extract and syntax-check inline JavaScript
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('iron-coach/index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)]
+            .map(match => match[1])
+            .filter(script => script.trim());
+          if (scripts.length === 0) throw new Error('No inline JavaScript found');
+          scripts.forEach((script, index) => {
+            const file = `/tmp/iron-coach-${index}.js`;
+            fs.writeFileSync(file, script);
+            require('node:child_process').execFileSync(process.execPath, ['--check', file], {stdio: 'inherit'});
+          });
+          console.log(`Syntax OK: ${scripts.length} inline script(s)`);
+          NODE
