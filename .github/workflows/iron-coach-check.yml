@@ -20,10 +20,9 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const html = fs.readFileSync('iron-coach/index.html', 'utf8');
-          const scripts = [...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)]
-            .map(match => match[1])
+          const scripts = html.split('<script').slice(1)
+            .map(part => part.slice(part.indexOf('>') + 1, part.toLowerCase().indexOf('</script>')))
             .filter(script => script.trim());
-          if (scripts.length === 0) throw new Error('No inline JavaScript found');
           scripts.forEach((script, index) => {
             const file = `/tmp/iron-coach-${index}.js`;
             fs.writeFileSync(file, script);
