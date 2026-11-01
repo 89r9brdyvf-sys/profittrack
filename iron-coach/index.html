@@ -29,7 +29,7 @@ const exercises=[
 {name:'Presse à cuisses',muscles:'Quadriceps, fessiers',sets:2,reps:'10–12',rest:90,tip:'Garde le dos en contact avec le dossier et utilise une amplitude confortable.',video:'presse à cuisses technique'},
 {name:'Gainage',muscles:'Abdominaux',sets:2,reps:'20–30 sec',rest:45,tip:'Garde le corps aligné et respire normalement.',video:'gainage planche technique'}
 ];
-let db=JSON.parse(localStorage.getItem('ironCoachV1')||'{"profiles":[],"active":null,"logs":[]}');
+let db;try{db=JSON.parse(localStorage.getItem('ironCoachV1')||'{"profiles":[],"active":null,"logs":[]}');}catch(loadError){console.error('IRON COACH saved data could not be read:',loadError);db={profiles:[],active:null,logs:[]};}if(!db||!Array.isArray(db.profiles)||!Array.isArray(db.logs)){console.warn('IRON COACH data structure repaired safely');db={profiles:[],active:null,logs:[]};}
 let page='home',mode='classic',timerId=null,seconds=0,currentIndex=0;
 function save(){localStorage.setItem('ironCoachV1',JSON.stringify(db))}
 function profile(){return db.profiles.find(p=>p.id===db.active)}
